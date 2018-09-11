@@ -4,7 +4,9 @@ Basak R, Narayanan R. Active dendrites regulate the spatiotemporal spread of sig
 
 Running Fig13.hoc will create files that will contain .txt files storing the values of various species (Ca, Calmodulin, phosphorylated CaMKII etc.) as they evolve with time at various spatial locations, specifically the 100 µm length around the spine-containing synapse in the oblique containing the calcium handling mechanisms. The default number of spines in the oblique in the .hoc file is 1000. Example output was obtained by running the defaultgrad_Dependent() function. This shows the example data generated for the Calcium species for 100 ms of simulation time at the central location of the oblique and is provided in the Sample_output_Calcium.txt file in this directory. The calcium handling mechanisms were incorporated in the file modcamechs.mod, which is modified from Ashhad and Narayanan; Journal of physiology; 2013
 
-Implemented by Reshma Basak and Rishikesh Narayanan. Contact reshmab@iisc.ac.in .
+Implemented by Reshma Basak and Rishikesh Narayanan. Contact reshmab at iisc.ac.in .
 
+If you need more help running this model please see:
+https://senselab.med.yale.edu/ModelDB/NEURON_DwnldGuide.cshtml
 
 
