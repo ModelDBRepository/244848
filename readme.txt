@@ -10,3 +10,6 @@ If you need more help running this model please see:
 https://senselab.med.yale.edu/ModelDB/NEURON_DwnldGuide.cshtml
 
 
+20181008 A correction from Reshma Basak for a shell volume scaling bug
+in modcamechs.mod and an updated sample calcium .txt file. The bug
+resulted in quantitative but not qualitative changes.

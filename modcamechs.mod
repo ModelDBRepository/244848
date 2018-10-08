@@ -8,6 +8,18 @@ NEURON {
     RANGE TBufs,KDs,kfs
     RANGE DCaM,TCaM,KDC,kfC,DCaMCa4,cammax, cammin
     RANGE TCAMKII,kfcamkii,KDcamkii,DCAMKII,DCAMKII_CamCa4,camkiimax, camkiimin
+
+    RANGE Kf_Cam_Camkii,Kd_Cam_Camkii
+    RANGE Kf_CamCa1_Camkii,Kd_CamCa1_Camkii
+    RANGE Kf_CamCa2_Camkii,Kd_CamCa2_Camkii
+    RANGE Kf_CamCa3_Camkii,Kd_CamCa3_Camkii
+    RANGE Kf_CamCa4_Camkii,Kd_CamCa4_Camkii
+    
+    RANGE Kf_CamkiiCam_Ca,Kd_CamkiiCam_Ca
+    RANGE Kf_CamkiiCamCa1_Ca,Kd_CamkiiCamCa1_Ca
+    RANGE Kf_CamkiiCamCa2_Ca,Kd_CamkiiCamCa2_Ca
+    RANGE Kf_CamkiiCamCa3_Ca,Kd_CamkiiCamCa3_Ca
+
     RANGE DpCAMKII_CamCa4,kfpcamkii,pcamkiimax,pcamkiimin
     RANGE TPP1,kfPP1
     RANGE tmax, tmin, vmax
@@ -30,32 +42,50 @@ UNITS {
 PARAMETER {
 	cai0 = 50e-6(mM)
 	cath = 0.2e-3 (mM) : threshold for ca pump activity
-	gamma =  8 (um/s) :8 (um/s)  ca pump flux density
+	gamma =  8 (um/s) :  ca pump flux density
 	jmax = 3.5e-3 (mM/ms)
     caer = 0.400 (mM)
 	Kact = 0.3e-3 (mM)
 	kon = 2.7 (/mM-ms)
 	Kinh = 0.2e-3 (mM)
     beta  = 1(1)     :introducing beta to take care of other ER mechanisms(SERCA and leak channel density)
-    vmax = 1e-4 (mM/ms) :1e-4   (mM/ms) :1e-4 default;3e-1 is the highest value to achieve RTdirect=RTindirect@Pampa=8e-7
+    vmax = 1e-4 (mM/ms)
 	Kp = 0.27e-3 (mM)
     DCa = 0.22 (um2/ms): 0.22 (um2/ms) Fink et al 2000
 
 	TBufs = 0.45 (mM)
-        kfs = 1000 (/mM-ms) : try these for now
+        kfs = 1000 (/mM-ms)
         KDs = 10 (uM)
     TBufm = 0.1 (mM)
-	    kfm = 1000 (/mM-ms) : try these for now
+	    kfm = 1000 (/mM-ms)
         KDm = 0.2 (uM)
         DBufm = 0.050 (um2/ms)
-    TCaM = 1e-3 (mM)
+    TCaM = 1e-3(mM)
         kfC = 8.4848(/mM-ms)
         KDC = 1.0001 (uM)
         DCaM = 4e-3 (um2/ms)
-        DCaMCa4 =4e-3 (um2/ms)
+        DCaMCa4 = 4e-3 (um2/ms)
     TCAMKII = 70e-3 (mM)
-        kfcamkii = 49.9998(/mM-ms)
-        KDcamkii = 0.1 (uM)
+        Kf_Cam_Camkii = 0.2(/uM-s)
+        Kd_Cam_Camkii = 13500 (uM)
+        Kf_CamCa1_Camkii =  0.8 (/uM-s)
+        Kd_CamCa1_Camkii =  3375.0084 (uM)
+        Kf_CamCa2_Camkii = 2 (/uM-s)
+        Kd_CamCa2_Camkii = 1125 (uM)
+        Kf_CamCa3_Camkii = 100.004 (/uM-s)
+        Kd_CamCa3_Camkii = 0.225(uM)
+        Kf_CamCa4_Camkii = 100.004 (/uM-s)
+        Kd_CamCa4_Camkii = 0.045(uM)
+
+        Kf_CamkiiCam_Ca = 4(/uM-s)
+        Kd_CamkiiCam_Ca = 5(uM)
+        Kf_CamkiiCamCa1_Ca = 100.004 (/uM-s)
+        Kd_CamkiiCamCa1_Ca = 0.2 (uM)
+        Kf_CamkiiCamCa2_Ca = 100.004 (/uM-s)
+        Kd_CamkiiCamCa2_Ca = 0.02 (uM)
+        Kf_CamkiiCamCa3_Ca = 100.004 (/uM-s)
+        Kd_CamkiiCamCa3_Ca = 1 (uM)
+
         DCAMKII = 1.6e-3 (um2/ms)
         DCAMKII_CamCa4 = 1.6e-3 (um2/ms)
         kfpcamkii = 10e-3(/ms)
@@ -63,7 +93,7 @@ PARAMETER {
         pcamkii_camca4_0 = 0 (mM)
     TPP1 = 10e-3 (mM)
         kfPP1 = 1.72e-3 (/ms)
-        itocfactor=150
+        itocfactor=120
 }
 
 ASSIGNED {
@@ -106,10 +136,20 @@ STATE {
         cabufs[Nannuli]  (mM) <1e-7>
         bufm[Nannuli]    (mM) <1e-4>
         cabufm[Nannuli]  (mM) <1e-8>
+
         cam[Nannuli]    (mM) <1e-8>
+        camca1[Nannuli] (mM) <1e-8>
+        camca2[Nannuli] (mM) <1e-8>
+        camca3[Nannuli] (mM) <1e-8>
         camca4[Nannuli] (mM) <1e-8>
+
         camkii[Nannuli] (mM) <1e-8>
+        camkii_cam[Nannuli] (mM) <1e-8>
+        camkii_camca1[Nannuli] (mM) <1e-8>
+        camkii_camca2[Nannuli] (mM) <1e-8>
+        camkii_camca3[Nannuli] (mM) <1e-8>
         camkii_camca4[Nannuli] (mM) <1e-8>
+
         pcamkii_camca4[Nannuli] (mM) <1e-8>
         PP1 (mM) <1e-8>
         dPP1 (mM) <1e-8>
@@ -126,7 +166,6 @@ INITIAL {
         cai = cai0
 	
 	bufs_0 = KDs*TBufs/(KDs + (1000)*cai0)
-	:bufm_0=KDm*TBufm/(KDm+ (1000)*cai0)
 
 	FROM i=0 TO Nannuli-1 {    
           ca[i] = cai
@@ -135,14 +174,19 @@ INITIAL {
           bufm[i] = bufm_0
           cabufm[i] = TBufm - bufm_0
           cam[i] = TCaM
-          camca4[i]= TCaM-cam[i]
+          camca1[i]= 0
+          camca2[i]= 0
+          camca3[i]= 0
+          camca4[i]= 0
           camkii[i] = TCAMKII
+          camkii_cam[i]=0
+          camkii_camca1[i]=0
+          camkii_camca2[i]=0
+          camkii_camca3[i]=0
           camkii_camca4[i]=0
           pcamkii_camca4[i]=0
           PP1 = TPP1
           dPP1 = 0
-
-
    	}
 
    	ica=0
@@ -150,7 +194,6 @@ INITIAL {
    	ica_pmp_last = 0
     FROM i=0 TO Nannuli-1 {
     		jx = (-vmax*ca[i]^2 / (ca[i]^2 + Kp^2))
-     	   	:L[i] = 0
             L[i] = -jx/(1 - (ca[i]/caer))
     	}
 
@@ -164,9 +207,6 @@ INITIAL {
     pcamkiimin = 1e8
     tmax = t
     tmin = t
-
-   : SOLVE state STEADYSTATE sparse
-    
     
 }
 
@@ -178,13 +218,11 @@ BREAKPOINT {
     ica = ica_pmp
 
   FROM i=0 TO Nannuli-1 {
-   cam[i] = TCaM - (camca4[i] + camkii_camca4[i] + pcamkii_camca4[i])
-   camkii[i]  = TCAMKII - (camkii_camca4[i] + pcamkii_camca4[i])
+   cam[i] = TCaM - (camca1[i]+camca2[i]+camca3[i]+camca4[i]+camkii_cam[i]+camkii_camca1[i]+camkii_camca2[i]+camkii_camca3[i]+camkii_camca4[i]+pcamkii_camca4[i])
+   camkii[i]  = TCAMKII - (camkii_cam[i]+camkii_camca1[i]+camkii_camca2[i]+camkii_camca3[i]+camkii_camca4[i]+pcamkii_camca4[i])
    
 
   }
-
- 
 
     VERBATIM
         if (camca4[0] > cammax) {
@@ -219,7 +257,6 @@ BREAKPOINT {
 
 }
 
-
 LOCAL frat[Nannuli]
 
 PROCEDURE factors() {
@@ -244,12 +281,12 @@ PROCEDURE factors() {
 LOCAL dsq, dsqvol
 
 KINETIC state {
-  	COMPARTMENT i, diam*diam*vrat[i] {ca sump bufs cabufs cam camca4 bufm cabufm   camkii camkii_camca4 pcamkii_camca4}
+  	COMPARTMENT i, diam*diam*vrat[i] {ca sump bufs cabufs cam camca1 camca2 camca3 camca4 bufm cabufm}
+    COMPARTMENT i, diam*diam*vrat[i] {camkii camkii_cam camkii_camca1 camkii_camca2 camkii_camca3 camkii_camca4 pcamkii_camca4}
   	COMPARTMENT volo {cao}
   	LONGITUDINAL_DIFFUSION i, DCa*diam*diam*vrat[i] {ca}
-  	:LONGITUDINAL_DIFFUSION i, DBufm*diam*diam*vrat[i] {bufm cabufm}
-    LONGITUDINAL_DIFFUSION i, DCaM*diam*diam*vrat[i] {cam camca4}
-    LONGITUDINAL_DIFFUSION i, DCAMKII*diam*diam*vrat[i] {camkii camkii_camca4}
+    LONGITUDINAL_DIFFUSION i, DCaM*diam*diam*vrat[i] {cam camca1 camca2 camca3 camca4}
+    LONGITUDINAL_DIFFUSION i, DCAMKII*diam*diam*vrat[i] {camkii camkii_cam camkii_camca1 camkii_camca2 camkii_camca3 camkii_camca4}
     LONGITUDINAL_DIFFUSION i, DpCAMKII_CamCa4*diam*diam*vrat[i] {pcamkii_camca4}
 
 
@@ -259,8 +296,7 @@ KINETIC state {
   	ica_pmp = 2*FARADAY*(f_flux - b_flux)/parea
 
   	: all currents except cell membrane ca pump
-  	~ ca[0] << (-(ica - ica_pmp_last)*PI*diam/(2*itocfactor*FARADAY))  : ica is Ca efflux ((XXXXXXX HAS TO BE UNCOMMENTED IN ORIGINAL PROG XXXXXXXXXXX)
-	:~ ca[0] << (-(ica)*PI*diam/(2*FARADAY))  : ica is Ca efflux : to be used only when all ca2+ extrusion mechanisms and jip3 is off (XXXXXXX HAS TO BE COMMENTED IN ORIGINAL PROG XXXXXXXXXXX)
+  	~ ca[0] << (-(ica - ica_pmp_last)*PI*diam/(2*itocfactor*FARADAY))  : ica is Ca efflux
                                                                 : converts ica from vgccs to cai
 
 
@@ -275,44 +311,62 @@ KINETIC state {
    	FROM i=0 TO Nannuli-1 {
 	 	dsqvol = dsq*vrat[i]
         ~ ca[i] + bufs[i] <-> cabufs[i]  (kfs*dsqvol, (0.001)*KDs*kfs*dsqvol)
-        :~ ca[i] + bufm[i] <-> cabufm[i]  (kfm*dsqvol, (0.001)*KDm*kfm*dsqvol)
 	}
 
-   	FROM i=0 TO Nannuli-2 {
-   		:~ bufm[i] <-> bufm[i+1] (DBufm*frat[i+1], DBufm*frat[i+1])
-   		:~ cabufm[i] <-> cabufm[i+1] (DBufm*frat[i+1], DBufm*frat[i+1])
- 	}
-
     FROM i=0 TO Nannuli-1 {
+        dsqvol = dsq*vrat[i]
      :pump
    		~ ca[i] << (-dsqvol*beta*vmax*ca[i]^2 / (ca[i]^2 + Kp^2))
      :leak
    	 	~ ca[i] << (dsqvol*beta*L[i]*(1 - (ca[i]/caer)))
-        }
+    }
 
     :Calmodulin
 
    	FROM i=0 TO Nannuli-1 {
-          ~ ca[i] + cam[i] <-> camca4[i]  (kfC*dsqvol, (0.001)*KDC*kfC*dsqvol)
+          dsqvol = dsq*vrat[i]
+          ~ ca[i] + cam[i] <-> camca1[i]  (kfC*dsqvol, (0.001)*KDC*kfC*dsqvol)
+          ~ ca[i] + camca1[i] <-> camca2[i]  (kfC*dsqvol, (0.001)*KDC*kfC*dsqvol)
+          ~ ca[i] + camca2[i] <-> camca3[i]  (kfC*dsqvol, (0.001)*KDC*kfC*dsqvol)
+          ~ ca[i] + camca3[i] <-> camca4[i]  (kfC*dsqvol, (0.001)*KDC*kfC*dsqvol)
+
 	}
 
    	FROM i=0 TO Nannuli-2 {
    		~ cam[i] <-> cam[i+1] (DCaM*frat[i+1], DCaM*frat[i+1])
+   		~ camca1[i] <-> camca1[i+1] (DCaM*frat[i+1], DCaM*frat[i+1])
+   		~ camca2[i] <-> camca2[i+1] (DCaM*frat[i+1], DCaM*frat[i+1])
+   		~ camca3[i] <-> camca3[i+1] (DCaM*frat[i+1], DCaM*frat[i+1])
    		~ camca4[i] <-> camca4[i+1] (DCaM*frat[i+1], DCaM*frat[i+1])
  	}
 
     :CAMKII
    	FROM i=0 TO Nannuli-1 {
-          ~ camca4[i] + camkii[i] <-> camkii_camca4[i]  (kfcamkii*dsqvol, (0.001)*KDcamkii*kfcamkii*dsqvol)
+          dsqvol = dsq*vrat[i]
+          ~ cam[i] + camkii[i] <-> camkii_cam[i] (Kf_Cam_Camkii*dsqvol,(0.001)*Kd_Cam_Camkii*Kf_Cam_Camkii*dsqvol)
+          ~ camca1[i] + camkii[i] <-> camkii_camca1[i] (Kf_CamCa1_Camkii*dsqvol, (0.001)*Kd_CamCa1_Camkii*Kf_CamCa1_Camkii*dsqvol)
+          ~ camca2[i] + camkii[i] <-> camkii_camca2[i] (Kf_CamCa2_Camkii*dsqvol, (0.001)*Kd_CamCa2_Camkii*Kf_CamCa2_Camkii*dsqvol)
+          ~ camca3[i] + camkii[i] <-> camkii_camca3[i] (Kf_CamCa3_Camkii*dsqvol, (0.001)*Kd_CamCa3_Camkii*Kf_CamCa3_Camkii*dsqvol)
+          ~ camca4[i] + camkii[i] <-> camkii_camca4[i] (Kf_CamCa4_Camkii*dsqvol, (0.001)*Kd_CamCa4_Camkii*Kf_CamCa4_Camkii*dsqvol)
+          
+          ~ camkii_cam[i] + ca[i] <-> camkii_camca1[i] (Kf_CamkiiCam_Ca*dsqvol,(0.001)*Kd_CamkiiCam_Ca*Kf_CamkiiCam_Ca*dsqvol)
+          ~ camkii_camca1[i] + ca[i] <-> camkii_camca2[i] (Kf_CamkiiCamCa1_Ca*dsqvol,(0.001)*Kd_CamkiiCamCa1_Ca*Kf_CamkiiCamCa1_Ca*dsqvol)
+          ~ camkii_camca2[i] + ca[i] <-> camkii_camca3[i] (Kf_CamkiiCamCa2_Ca*dsqvol,(0.001)*Kd_CamkiiCamCa2_Ca*Kf_CamkiiCamCa2_Ca*dsqvol)
+          ~ camkii_camca3[i] + ca[i] <-> camkii_camca4[i] (Kf_CamkiiCamCa3_Ca*dsqvol,(0.001)*Kd_CamkiiCamCa3_Ca*Kf_CamkiiCamCa3_Ca*dsqvol)
 	}
 
    	FROM i=0 TO Nannuli-2 {
    	  ~ camkii[i] <-> camkii[i+1] (DCAMKII*frat[i+1], DCAMKII*frat[i+1])
+      ~ camkii_cam[i] <-> camkii_cam[i+1] (DCAMKII*frat[i+1], DCAMKII*frat[i+1])
+   	  ~ camkii_camca1[i] <-> camkii_camca1[i+1] (DCAMKII*frat[i+1], DCAMKII*frat[i+1])
+   	  ~ camkii_camca2[i] <-> camkii_camca2[i+1] (DCAMKII*frat[i+1], DCAMKII*frat[i+1])
+   	  ~ camkii_camca3[i] <-> camkii_camca3[i+1] (DCAMKII*frat[i+1], DCAMKII*frat[i+1])
    	  ~ camkii_camca4[i] <-> camkii_camca4[i+1] (DCAMKII*frat[i+1], DCAMKII*frat[i+1])
  	}
 
     : pCAMKII
    	FROM i=0 TO Nannuli-1 {
+         dsqvol = dsq*vrat[i]
          ~ camkii_camca4[i] <-> pcamkii_camca4[i]  (kfpcamkii*dsqvol,0)
 	}
 
@@ -322,35 +376,17 @@ KINETIC state {
 
     : PP1(dephosphorylation)
    	FROM i=0 TO Nannuli-1 {
+          dsqvol = dsq*vrat[i]
           ~ pcamkii_camca4[i] + PP1 <-> camkii_camca4[i] + dPP1  (kfPP1*dsqvol,0)
     }
-    
-     ~ dPP1 <-> PP1 (1e8,0)
 
+    ~ dPP1 <-> PP1 (1e8,0)
 
-     FROM i=0 TO Nannuli-1 {
-        :camkii[i] = 0
-        :camkii_camca4[i] = 0
-        :pcamkii_camca4[i] = 0
-        :PP1 = 0
-        :dPP1 = 0
-    }
   	cai = ca[0]
   	ca1 = ca[1]
   	ca2 = ca[2]
   	ca3 = ca[3]
-    
-: DO NOTHING TO THIS PORTION- ORIGINALLY COMMENTED OUT
-          FROM i=0 TO Nannuli-1 {
-           :CONSERVE camkii_camca4[i] + pcamkii_camca4[i] + camkii[i] = TCAMKII
-           :CONSERVE camkii_camca4[i] + pcamkii_camca4[i] + cam[i]+ camca4[i] = TCaM
-
-             :camkii[i] = TCAMKII - (camkii_camca4[i] + pcamkii_camca4[i])
-             :cam[i] =  TCaM - camca4[i] :+ camkii_camca4[i]) + pcamkii_camca4[i])
-             :cam[i] = TCaM - (camca4[i] + camkii_camca4[i]+ pcamkii_camca4[i])
-          }
-            : CONSERVE PP1 + dPP1 = TPP1
-        }
+}
 
 
 FUNCTION u (x, th) {
