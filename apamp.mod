@@ -23,9 +23,11 @@ ASSIGNED {
 }
 
 VERBATIM
+#ifndef NRN_VERSION_GTEQ_8_2_0
 extern void vector_resize();
 extern double* vector_vec();
 extern void* vector_arg();
+#endif
 ENDVERBATIM
 
 INITIAL {
@@ -33,8 +35,8 @@ INITIAL {
 	firing = 0
 	high=0
 VERBATIM
-	{ void* vv;
-		vv = *((void**)(&space));
+	{
+		IvocVect* vv = *((IvocVect**)(&space));
 		if (vv) {
 			vector_resize(vv, 0);
 		}
@@ -49,7 +51,7 @@ BREAKPOINT {
 
 PROCEDURE check() {
 VERBATIM
-	int size; double* px; void* vv;
+	int size; double* px;
 	if (v >= thresh && !firing) {
 		firing = 1;
 		time = t;
@@ -60,7 +62,7 @@ VERBATIM
 	if(high) {
 		if (v<=thresh && t>time){
 			n += 1.;
-			vv = *((void**)(&space));
+			IvocVect* vv = *((IvocVect**)(&space));
 			if (vv) {
 				size = (int)n;
 				vector_resize(vv, size);
@@ -83,10 +85,8 @@ ENDVERBATIM
 
 PROCEDURE record() {
 VERBATIM
-	extern void* vector_arg();
-	void** vv;
-	vv = (void**)(&space);
-	*vv = (void*)0;
+	IvocVect** vv = (IvocVect**)(&space);
+	*vv = (IvocVect*)0;
 	if (ifarg(1)) {
 		*vv = vector_arg(1);
 	}
