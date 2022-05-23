@@ -13,3 +13,6 @@ https://senselab.med.yale.edu/ModelDB/NEURON_DwnldGuide.cshtml
 20181008 A correction from Reshma Basak for a shell volume scaling bug
 in modcamechs.mod and an updated sample calcium .txt file. The bug
 resulted in quantitative but not qualitative changes.
+
+20220523 Updated MOD files to contain valid C++ and be compatible with
+the upcoming versions 8.2 and 9.0 of NEURON.
